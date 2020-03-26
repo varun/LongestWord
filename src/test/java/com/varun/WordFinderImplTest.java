@@ -3,8 +3,10 @@ package com.varun;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.*;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class WordFinderImplTest {
@@ -15,12 +17,12 @@ class WordFinderImplTest {
         final WordFinder wordFinder = new WordFinderImpl("The   cow jumped   over     the moon");
 
         //When
-        Map<String, Integer> longestWordMap = wordFinder.longestWord();
-        Map<String, Integer> shortestWordMap = wordFinder.shortestWord();
+        Map<Integer, Set<String>> longestWordMap = wordFinder.longestWord();
+        Map<Integer, Set<String>> shortestWordMap = wordFinder.shortestWord();
 
         //Then
-        assertThat(longestWordMap, IsMapContaining.hasEntry("jumped", 6));
-        assertThat(shortestWordMap, IsMapContaining.hasEntry("the", 3));
+        assertThat(longestWordMap, IsMapContaining.hasEntry(6, new HashSet<>(singletonList("jumped"))));
+        assertThat(shortestWordMap, IsMapContaining.hasEntry(3, new HashSet<>(asList("The", "the", "cow"))));
     }
 
     @Test
@@ -29,12 +31,12 @@ class WordFinderImplTest {
         final WordFinder wordFinder = new WordFinderImpl("");
 
         //When
-        Map<String, Integer> longestWordMap = wordFinder.longestWord();
-        Map<String, Integer> shortestWordMap = wordFinder.shortestWord();
+        Map<Integer, Set<String>> longestWordMap = wordFinder.longestWord();
+        Map<Integer, Set<String>> shortestWordMap = wordFinder.shortestWord();
 
         //Then
-        assertThat(longestWordMap, IsMapContaining.hasEntry("", 0));
-        assertThat(shortestWordMap, IsMapContaining.hasEntry("", 0));
+        assertThat(longestWordMap, IsMapContaining.hasEntry(0, new HashSet<>(singletonList(""))));
+        assertThat(shortestWordMap, IsMapContaining.hasEntry(0, new HashSet<>(singletonList(""))));
     }
 
     @Test
@@ -43,12 +45,12 @@ class WordFinderImplTest {
         final WordFinder wordFinder = new WordFinderImpl("      The   cow jumped over   the moon");
 
         //When
-        Map<String, Integer> longestWordMap = wordFinder.longestWord();
-        Map<String, Integer> shortestWordMap = wordFinder.shortestWord();
+        Map<Integer, Set<String>> longestWordMap = wordFinder.longestWord();
+        Map<Integer, Set<String>> shortestWordMap = wordFinder.shortestWord();
 
         //Then
-        assertThat(longestWordMap, IsMapContaining.hasEntry("jumped", 6));
-        assertThat(shortestWordMap, IsMapContaining.hasEntry("the", 3));
+        assertThat(longestWordMap, IsMapContaining.hasEntry(6, new HashSet<>(singletonList("jumped"))));
+        assertThat(shortestWordMap, IsMapContaining.hasEntry(3, new HashSet<>(asList("The", "the", "cow"))));
     }
 
     @Test
@@ -57,12 +59,12 @@ class WordFinderImplTest {
         final WordFinder wordFinder = new WordFinderImpl("The cow jumped over the moon     ");
 
         //When
-        Map<String, Integer> longestWordMap = wordFinder.longestWord();
-        Map<String, Integer> shortestWordMap = wordFinder.shortestWord();
+        Map<Integer, Set<String>> longestWordMap = wordFinder.longestWord();
+        Map<Integer, Set<String>> shortestWordMap = wordFinder.shortestWord();
 
         //Then
-        assertThat(longestWordMap, IsMapContaining.hasEntry("jumped", 6));
-        assertThat(shortestWordMap, IsMapContaining.hasEntry("the", 3));
+        assertThat(longestWordMap, IsMapContaining.hasEntry(6, new HashSet<>(singletonList("jumped"))));
+        assertThat(shortestWordMap, IsMapContaining.hasEntry(3, new HashSet<>(asList("The", "the", "cow"))));
     }
 
     @Test
@@ -71,10 +73,11 @@ class WordFinderImplTest {
         final WordFinder wordFinder = new WordFinderImpl("The cow jumped over the moon");
 
         //When
-        Map<String, Integer> actualResults = wordFinder.longestWord();
+        Map<Integer, Set<String>> longestWordMap = wordFinder.longestWord();
 
         //Then
-        assertThat(actualResults, IsMapContaining.hasEntry("jumped", 6));
+        assertThat(longestWordMap, IsMapContaining.hasEntry(6, new HashSet<>(singletonList("jumped"))));
+
     }
 
     @Test
@@ -83,10 +86,10 @@ class WordFinderImplTest {
         final WordFinder wordFinder = new WordFinderImpl("a cow jumped over the moon");
 
         //When
-        Map<String, Integer> actualResults = wordFinder.shortestWord();
+        Map<Integer, Set<String>> shortestWordMap = wordFinder.shortestWord();
 
         //Then
-        assertThat(actualResults, IsMapContaining.hasEntry("a", 1));
+        assertThat(shortestWordMap, IsMapContaining.hasEntry(1, new HashSet<>(singletonList("a"))));
     }
 
 }

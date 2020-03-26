@@ -3,6 +3,8 @@ package com.varun;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
+
 public class WordFinderImpl implements WordFinder {
 
     private final String sentence;
@@ -12,34 +14,45 @@ public class WordFinderImpl implements WordFinder {
     }
 
     @Override
-    public Map<String, Integer> longestWord() {
-        Set<String> words = toSet(this.sentence.trim().split("\\s+"));
-        Optional<String> optionalLongestWord = words.stream().map(String::toLowerCase).max(Comparator.comparingInt(String::length));
-        return getResults(optionalLongestWord);
+    public Map<Integer, Set<String>> longestWord() {
+        Map<Integer, Set<String>> mappedToLength = mapLengthToWords();
+        Map<Integer, Set<String>> results = returnIfEmptyMap(mappedToLength);
+        if (results != null) return results;
+        Integer maxLength = Collections.max(mappedToLength.keySet());
+        return getResults(mappedToLength, maxLength);
     }
+
 
     @Override
-    public Map<String, Integer> shortestWord() {
-        Set<String> words = toSet(this.sentence.trim().split("\\s+"));
-        Optional<String> optionalShortestWord = words.stream().map(String::toLowerCase).min(Comparator.comparingInt(String::length));
-        return getResults(optionalShortestWord);
+    public Map<Integer, Set<String>> shortestWord() {
+        Map<Integer, Set<String>> mappedToLength = mapLengthToWords();
+        Map<Integer, Set<String>> results = returnIfEmptyMap(mappedToLength);
+        if (results != null) return results;
+        Integer minLength = Collections.min(mappedToLength.keySet());
+        return getResults(mappedToLength, minLength);
     }
 
-    private Set<String> toSet(String[] words) {
-        return Arrays.stream(words).map(String::trim).collect(Collectors.toSet());
+    private Map<Integer, Set<String>> mapLengthToWords() {
+        return Arrays.stream(this.sentence.split(" "))
+                .map(String::trim)
+                .filter(s -> s.length() > 0)
+                .sorted(Comparator.comparingInt(String::length))
+                .collect(Collectors.groupingBy(String::length, Collectors.toSet()));
     }
 
-    private Map<String, Integer> getResults(Optional<String> optionalLongestWord) {
-        Map<String, Integer> results = new HashMap<>();
-
-        if (optionalLongestWord.isPresent()) {
-            String word = optionalLongestWord.get();
-            results.put(word, word.length());
-        } else {
-            results.put("", 0);
+    private Map<Integer, Set<String>> returnIfEmptyMap(Map<Integer, Set<String>> mappedToLength) {
+        if (mappedToLength.isEmpty()) {
+            Map<Integer, Set<String>> results = new HashMap<>();
+            results.put(0, new HashSet<>(singletonList("")));
+            return results;
         }
+        return null;
+    }
+
+    private Map<Integer, Set<String>> getResults(Map<Integer, Set<String>> map, Integer key) {
+        Map<Integer, Set<String>> results = new HashMap<>();
+        results.put(key, map.get(key));
         return results;
     }
-
 
 }
